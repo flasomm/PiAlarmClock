@@ -4,6 +4,7 @@ from time import strftime
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import (QApplication, QWidget, QLCDNumber, QVBoxLayout, QHBoxLayout, QPushButton)
 from PyQt5.QtGui import QIcon
+from clock.AnalogClock import AnalogClock
 
 
 class Clock(QWidget):
@@ -11,22 +12,23 @@ class Clock(QWidget):
     def __init__(self):
         super().__init__()
         self.config = configparser.ConfigParser()
-        self.config.read_file(open('settings.ini'))
-        self.initui()
+        self.config.read_file(open('../settings.ini'))
+        self.lcd = None
+        self.init_ui()
 
-    def initui(self):
+    def init_ui(self):
         self.setGeometry(600, 600, 600, 500)
         self.move(600, 300)
         self.setWindowTitle('RaspberryClock')
         self.setWindowIcon(QIcon('web.png'))
 
-        settingsButton = QPushButton("Settings")
+        settings_button = QPushButton("Settings")
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
         hbox.addStretch(1)
-        hbox.addWidget(settingsButton)
+        hbox.addWidget(settings_button)
 
-        if self.config['default']['digital']:
+        if self.config['default']['digital'] == "1":
             timer = QTimer(self)
             timer.timeout.connect(self._time)
             timer.start(1000)
@@ -36,6 +38,10 @@ class Clock(QWidget):
             self.lcd.resize(600, 500)
             self.lcd.display(strftime("%H" + ":" + "%M" + ":" + "%S"))
             vbox.addWidget(self.lcd)
+
+        else:
+            wid = AnalogClock()
+            vbox.addWidget(wid)
 
         vbox.addLayout(hbox)
         self.setLayout(vbox)
