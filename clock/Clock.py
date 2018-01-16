@@ -40,8 +40,8 @@ class Clock(QWidget):
             vbox.addWidget(self.lcd)
 
         else:
-            wid = AnalogClock()
-            vbox.addWidget(wid)
+            analog_clock = AnalogClock()
+            vbox.addWidget(analog_clock)
 
         vbox.addLayout(hbox)
         self.setLayout(vbox)
