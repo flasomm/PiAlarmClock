@@ -5,7 +5,6 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import (QApplication, QWidget, QLCDNumber, QVBoxLayout, QHBoxLayout, QPushButton)
 from PyQt5.QtGui import QIcon
 from clock.AnalogClock import AnalogClock
-from clock.AnalogClock2 import AnalogClock2
 
 
 class Clock(QWidget):
