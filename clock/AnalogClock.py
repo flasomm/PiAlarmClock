@@ -9,20 +9,12 @@ Qt and PyQt.
 
 
 class AnalogClock(QtWidgets.QWidget):
-    # Emitted when the clock's time changes.
-    timeChanged = QtCore.pyqtSignal(QtCore.QTime)
 
-    # Emitted when the clock's time zone changes.
-    timeZoneChanged = QtCore.pyqtSignal(int)
-
-    def __init__(self):
-        super().__init__()
-
-        self.timeZoneOffset = 0
+    def __init__(self, parent=None):
+        super(AnalogClock, self).__init__(parent)
 
         timer = QtCore.QTimer(self)
         timer.timeout.connect(self.update)
-        timer.timeout.connect(self.update_time)
         timer.start(1000)
 
         self.color = QtGui.QColor(205, 216, 87)
@@ -35,7 +27,6 @@ class AnalogClock(QtWidgets.QWidget):
     def paintEvent(self, event):
         side = min(self.width(), self.height())
         time = QtCore.QTime.currentTime()
-        time = time.addSecs(self.timeZoneOffset * 3600)
 
         painter = QtGui.QPainter()
         painter.begin(self)
@@ -73,47 +64,8 @@ class AnalogClock(QtWidgets.QWidget):
         painter.restore()
 
         for j in range(0, 60):
-            if (j % 5) != 0:
+            if (j % 5) != 6:
                 painter.drawLine(94, 0, 96, 0)
             painter.rotate(6.0)
 
         painter.end()
-
-    def minimumSizeHint(self):
-        return QtCore.QSize(50, 50)
-
-    def sizeHint(self):
-        return QtCore.QSize(100, 100)
-
-    def update_time(self):
-        self.timeChanged.emit(QtCore.QTime.currentTime())
-
-    # The timeZone property is implemented using the getTimeZone() getter
-    # method, the setTimeZone() setter method, and the resetTimeZone() method.
-
-    # The getter just returns the internal time zone value.
-    def get_timezone(self):
-        return self.timeZoneOffset
-
-    # The setTimeZone() method is also defined to be a slot. The @pyqtSlot
-    # decorator is used to tell PyQt which argument type the method expects,
-    # and is especially useful when you want to define slots with the same
-    # name that accept different argument types.
-
-    @QtCore.pyqtSlot(int)
-    def set_timezone(self, value):
-        self.timeZoneOffset = value
-        self.timeZoneChanged.emit(value)
-        self.update()
-
-    # Qt's property system supports properties that can be reset to their
-    # original values. This method enables the timeZone property to be reset.
-    def reset_timezone(self):
-        self.timeZoneOffset = 0
-        self.timeZoneChanged.emit(0)
-        self.update()
-
-    # Qt-style properties are defined differently to Python's properties.
-    # To declare a property, we call pyqtProperty() to specify the type and,
-    # in this case, getter, setter and resetter methods.
-    timeZone = QtCore.pyqtProperty(int, get_timezone, set_timezone, reset_timezone)
