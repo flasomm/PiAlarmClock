@@ -1,3 +1,5 @@
+import locale
+import time
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 """AnalogClock(QtGui.QWidget)
@@ -12,6 +14,7 @@ class AnalogClock(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
+        locale.setlocale(locale.LC_TIME, 'fr_FR')
 
         timer = QtCore.QTimer(self)
         timer.timeout.connect(self.update)
@@ -46,7 +49,7 @@ class AnalogClock(QtWidgets.QWidget):
 
     def paintEvent(self, event):
         side = min(self.width(), self.height())
-        time = QtCore.QTime.currentTime()
+        qTime = QtCore.QTime.currentTime()
 
         painter = QtGui.QPainter()
         painter.begin(self)
@@ -62,15 +65,19 @@ class AnalogClock(QtWidgets.QWidget):
         pen.setColor(self.needlesColor)
         painter.setPen(pen)
 
-        self.paint_needle(painter, 0.5 * (60 * time.hour() + time.minute()), self.hourHand)
-        self.paint_needle(painter, 6.0 * time.minute(), self.minuteHand)
+        self.paint_needle(painter, 0.5 * (60 * qTime.hour() + qTime.minute()), self.hourHand)
+        self.paint_needle(painter, 6.0 * qTime.minute(), self.minuteHand)
 
         painter.save()
         pen.setColor(self.color)
         pen.setWidth(1)
         painter.setPen(pen)
 
-        self.paint_needle(painter, 6.0 * time.second(), self.secondHand)
+        self.paint_needle(painter, 6.0 * qTime.second(), self.secondHand)
+
+        pen.setColor(self.color)
+        pen.setWidth(1)
+        painter.setPen(pen)
 
         for j in range(0, 60):
             if (j % 5) != 0:
@@ -92,4 +99,9 @@ class AnalogClock(QtWidgets.QWidget):
         painter.setBrush(self.color)
         painter.drawEllipse(-3, -3, 6, 6)
         painter.restore()
+
+        painter.setFont(QtGui.QFont("ds-digital", 22))
+        painter.drawText(-60, 7, time.strftime('%a'))
+        painter.drawText(18, 7, time.strftime('%d %b'))
+
         painter.end()
