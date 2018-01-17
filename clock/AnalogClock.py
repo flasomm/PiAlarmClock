@@ -58,29 +58,38 @@ class AnalogClock(QtWidgets.QWidget):
         pen.setStyle(QtCore.Qt.SolidLine)
         pen.setWidth(3)
         pen.setCapStyle(QtCore.Qt.RoundCap)
+        pen.setJoinStyle(QtCore.Qt.RoundJoin)
         pen.setColor(self.needlesColor)
         painter.setPen(pen)
 
-        self.paint_needle(painter, 30.0 * (time.hour() + time.minute() / 60.0), self.hourHand)
-        self.paint_needle(painter, 6.0 * (time.minute() + time.second() / 60.0), self.minuteHand)
-
-        pen.setWidth(1)
-        painter.setPen(pen)
-        self.paint_needle(painter, 6.0 * time.second(), self.secondHand)
-
-        for i in range(0, 12):
-            painter.drawLine(92, 0, 96, 0)
-            painter.rotate(30.0)
+        self.paint_needle(painter, 0.5 * (60 * time.hour() + time.minute()), self.hourHand)
+        self.paint_needle(painter, 6.0 * time.minute(), self.minuteHand)
 
         painter.save()
         pen.setColor(self.color)
+        pen.setWidth(1)
+        painter.setPen(pen)
+
+        self.paint_needle(painter, 6.0 * time.second(), self.secondHand)
+
         for j in range(0, 60):
             if (j % 5) != 0:
                 painter.drawLine(94, 0, 96, 0)
             painter.rotate(6.0)
-
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.drawEllipse(-3, -3, 6, 6)
         painter.restore()
 
+        painter.save()
+        pen.setWidth(3)
+        painter.setPen(pen)
+
+        for i in range(0, 12):
+            painter.drawLine(92, 0, 96, 0)
+            painter.rotate(30.0)
+        painter.restore()
+
+        painter.save()
+        painter.setPen(QtCore.Qt.NoPen)
+        painter.setBrush(self.color)
+        painter.drawEllipse(-3, -3, 6, 6)
+        painter.restore()
         painter.end()
