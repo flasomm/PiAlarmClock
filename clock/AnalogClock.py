@@ -5,7 +5,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 """AnalogClock(QtGui.QWidget)
 
 Provides an analog clock custom widget.
-The implementation is based on the Analog Clock example provided with both Qt and PyQt.
 """
 
 
