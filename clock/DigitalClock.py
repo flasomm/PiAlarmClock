@@ -1,0 +1,37 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+"""AnalogClock(QtGui.QWidget)
+
+Provides an analog clock custom widget.
+The implementation is based on the Analog Clock example provided with both Qt and PyQt.
+"""
+
+
+class DigitalClock(QtWidgets.QLCDNumber):
+
+    def __init__(self):
+        super().__init__()
+
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.setAutoFillBackground(True)
+        self.setFont(font)
+        self.setNumDigits(8)
+        self.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
+        palette = self.palette()
+        palette.setColor(palette.WindowText, QtGui.QColor(113, 249, 76))
+        palette.setColor(palette.Light, QtCore.Qt.black)
+        palette.setColor(palette.Background, QtCore.Qt.black)
+        palette.setColor(palette.Dark, QtCore.Qt.black)
+        self.setPalette(palette)
+
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(self.showTime)
+        timer.start(1000)
+
+        self.showTime()
+
+    def showTime(self):
+        time = QtCore.QTime.currentTime()
+        text = time.toString('hh:mm:ss')
+        self.display(text)

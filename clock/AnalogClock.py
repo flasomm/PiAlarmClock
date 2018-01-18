@@ -4,9 +4,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 """AnalogClock(QtGui.QWidget)
 
-Provides an analog clock custom widget with signals, slots and properties.
-The implementation is based on the Analog Clock example provided with both
-Qt and PyQt.
+Provides an analog clock custom widget.
+The implementation is based on the Analog Clock example provided with both Qt and PyQt.
 """
 
 
@@ -41,7 +40,7 @@ class AnalogClock(QtWidgets.QWidget):
             QtCore.QPoint(0, -80)
         ])
 
-    def paint_needle(self, painter, angle, needle):
+    def paintNeedle(self, painter, angle, needle):
         painter.save()
         painter.rotate(angle)
         painter.drawConvexPolygon(needle)
@@ -65,15 +64,15 @@ class AnalogClock(QtWidgets.QWidget):
         pen.setColor(self.needlesColor)
         painter.setPen(pen)
 
-        self.paint_needle(painter, 0.5 * (60 * qTime.hour() + qTime.minute()), self.hourHand)
-        self.paint_needle(painter, 6.0 * qTime.minute(), self.minuteHand)
+        self.paintNeedle(painter, 0.5 * (60 * qTime.hour() + qTime.minute()), self.hourHand)
+        self.paintNeedle(painter, 6.0 * qTime.minute(), self.minuteHand)
 
         painter.save()
         pen.setColor(self.color)
         pen.setWidth(1)
         painter.setPen(pen)
 
-        self.paint_needle(painter, 6.0 * qTime.second(), self.secondHand)
+        self.paintNeedle(painter, 6.0 * qTime.second(), self.secondHand)
 
         pen.setColor(self.color)
         pen.setWidth(1)
