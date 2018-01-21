@@ -13,14 +13,12 @@ class DigitalClock(QtWidgets.QLCDNumber):
 
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.setAutoFillBackground(True)
         self.setFont(font)
         self.setNumDigits(8)
         self.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
         palette = self.palette()
         palette.setColor(palette.WindowText, QtGui.QColor(113, 249, 76))
         palette.setColor(palette.Light, QtCore.Qt.black)
-        palette.setColor(palette.Background, QtCore.Qt.black)
         palette.setColor(palette.Dark, QtCore.Qt.black)
         self.setPalette(palette)
 

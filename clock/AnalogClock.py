@@ -21,11 +21,6 @@ class AnalogClock(QtWidgets.QWidget):
         self.color = QtGui.QColor(113, 249, 76)
         self.needlesColor = QtGui.QColor(84, 189, 55)
 
-        self.setAutoFillBackground(True)
-        palette = self.palette()
-        palette.setColor(self.backgroundRole(), QtCore.Qt.black)
-        self.setPalette(palette)
-
         self.hourHand = QtGui.QPolygon([
             QtCore.QPoint(0, 0),
             QtCore.QPoint(0, -50)
