@@ -46,6 +46,8 @@ class MainWidget(QtWidgets.QWidget):
 
     def __controls(self):
         self.settingsButton = QtWidgets.QPushButton("Settings")
+        buttonStyle = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
+        self.settingsButton.setStyleSheet(buttonStyle)
         self.settingsButton.clicked.connect(self.parent().displaySettings)
         self.digitalClock = DigitalClock()
         self.analogClock = AnalogClock()

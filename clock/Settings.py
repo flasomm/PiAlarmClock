@@ -2,11 +2,11 @@ from PyQt5 import QtCore, QtWidgets
 
 
 class Settings(QtWidgets.QDialog):
-    NumGridRows = 3
-    NumButtons = 4
 
     def __init__(self, parent):
         super(Settings, self).__init__()
+
+        self.formGroupBox = QtWidgets.QGroupBox("Settings")
         self.createFormGroupBox()
 
         self.setAutoFillBackground(True)
@@ -14,7 +14,7 @@ class Settings(QtWidgets.QDialog):
         palette.setColor(self.backgroundRole(), QtCore.Qt.gray)
         self.setPalette(palette)
 
-        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel)
         buttonBox.accepted.connect(parent.displayDefault)
         buttonBox.rejected.connect(parent.displayDefault)
 
@@ -24,7 +24,7 @@ class Settings(QtWidgets.QDialog):
         self.setLayout(mainLayout)
 
     def createFormGroupBox(self):
-        self.formGroupBox = QtWidgets.QGroupBox("Settings")
+        self.formGroupBox.setAlignment(QtCore.Qt.AlignLeft)
         layout = QtWidgets.QFormLayout()
         layout.addRow(QtWidgets.QLabel("Name:"), QtWidgets.QLineEdit())
         layout.addRow(QtWidgets.QLabel("Country:"), QtWidgets.QComboBox())
