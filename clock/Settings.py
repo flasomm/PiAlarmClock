@@ -1,13 +1,10 @@
 from PyQt5 import QtCore, QtWidgets
 
 
-class Settings(QtWidgets.QDialog):
+class Settings(QtWidgets.QWidget):
 
     def __init__(self, parent):
-        super(Settings, self).__init__()
-
-        self.formGroupBox = QtWidgets.QGroupBox("Settings")
-        self.createFormGroupBox()
+        super(Settings, self).__init__(parent)
 
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -18,15 +15,21 @@ class Settings(QtWidgets.QDialog):
         buttonBox.accepted.connect(parent.displayDefault)
         buttonBox.rejected.connect(parent.displayDefault)
 
+        formGroupBox = QtWidgets.QGroupBox("Settings")
         mainLayout = QtWidgets.QVBoxLayout()
-        mainLayout.addWidget(self.formGroupBox)
+        mainLayout.addWidget(formGroupBox)
         mainLayout.addWidget(buttonBox)
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel("Name:"), 1, 0)
+        layout.addWidget(QtWidgets.QLineEdit(), 1, 1)
+        layout.addWidget(QtWidgets.QLabel("Country:"), 2, 0)
+        layout.addWidget(QtWidgets.QComboBox(), 2, 1)
+        layout.addWidget(QtWidgets.QLabel("Age:"), 3, 0)
+        layout.addWidget(QtWidgets.QSpinBox(), 3, 1)
+        layout.setColumnStretch(1, 100)
+        layout.setColumnStretch(2, 10)
+        layout.setColumnStretch(3, 10)
+        formGroupBox.setLayout(layout)
         self.setLayout(mainLayout)
 
-    def createFormGroupBox(self):
-        self.formGroupBox.setAlignment(QtCore.Qt.AlignLeft)
-        layout = QtWidgets.QFormLayout()
-        layout.addRow(QtWidgets.QLabel("Name:"), QtWidgets.QLineEdit())
-        layout.addRow(QtWidgets.QLabel("Country:"), QtWidgets.QComboBox())
-        layout.addRow(QtWidgets.QLabel("Age:"), QtWidgets.QSpinBox())
-        self.formGroupBox.setLayout(layout)

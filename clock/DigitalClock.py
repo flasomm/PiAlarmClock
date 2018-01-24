@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-"""AnalogClock(QtGui.QWidget)
+"""DigitalClock(QtWidgets.QLCDNumber)
 
 Provides a digital clock custom widget.
 """
