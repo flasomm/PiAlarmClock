@@ -1,5 +1,4 @@
 import sys
-import configparser
 from PyQt5 import QtCore, QtWidgets, QtGui
 from clock.DigitalClock import DigitalClock
 from clock.AnalogClock import AnalogClock
@@ -10,9 +9,7 @@ class Main(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(Main, self).__init__()
-        self.config = configparser.ConfigParser()
-        self.config.read_file(open('../settings.ini'))
-        self.displaySettings()
+        self.settings = QtCore.QSettings('../settings.ini', QtCore.QSettings.IniFormat)
 
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -58,7 +55,7 @@ class MainWidget(QtWidgets.QWidget):
         self.hbox.addStretch(1)
         self.hbox.addWidget(self.settingsButton)
 
-        if self.parent().config['default']['digital'] == "1":
+        if self.parent().settings.value("default/digital") == "1":
             self.vbox.addWidget(self.digitalClock)
         else:
             self.vbox.addWidget(self.analogClock)
