@@ -55,7 +55,8 @@ class MainWidget(QtWidgets.QWidget):
         self.hbox.addStretch(1)
         self.hbox.addWidget(self.settingsButton)
 
-        if self.parent().settings.value("default/digital") == "1":
+        print('step1', self.parent().settings.value("default/digital"))
+        if self.parent().settings.value("default/digital") == '1':
             self.vbox.addWidget(self.digitalClock)
         else:
             self.vbox.addWidget(self.analogClock)

@@ -16,12 +16,18 @@ class Settings(QtWidgets.QWidget):
         hbox = QtWidgets.QHBoxLayout()
         digitalRadio = QtWidgets.QRadioButton("Digital")
         analogRadio = QtWidgets.QRadioButton("Analog")
-        analogRadio.clicked.connect(parent.settings.setValue("default/digital", 0))
-        digitalRadio.clicked.connect(parent.settings.setValue("default/digital", 1))
+        analogRadio.toggled.connect(lambda: parent.settings.setValue("default/digital", 0))
+        digitalRadio.toggled.connect(lambda: parent.settings.setValue("default/digital", 1))
 
         digitalRadio.setAutoExclusive(True)
         analogRadio.setAutoExclusive(True)
-        digitalRadio.setChecked(True)
+
+        print('step2', parent.settings.value("default/digital"))
+
+        digitalRadioChecked = True if (parent.settings.value("default/digital") == '1') else False
+        analogRadioChecked = True if (parent.settings.value("default/digital") == '0') else False
+        digitalRadio.setChecked(digitalRadioChecked)
+        analogRadio.setChecked(analogRadioChecked)
 
         hbox.addWidget(digitalRadio)
         hbox.addWidget(analogRadio)
