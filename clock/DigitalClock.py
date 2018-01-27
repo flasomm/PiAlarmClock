@@ -23,12 +23,12 @@ class DigitalClock(QtWidgets.QLCDNumber):
         self.setPalette(palette)
 
         timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.showTime)
+        timer.timeout.connect(self.show_time)
         timer.start(1000)
 
-        self.showTime()
+        self.show_time()
 
-    def showTime(self):
+    def show_time(self):
         time = QtCore.QTime.currentTime()
         text = time.toString('hh:mm:ss')
         self.display(text)

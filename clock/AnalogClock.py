@@ -19,22 +19,22 @@ class AnalogClock(QtWidgets.QWidget):
         timer.start(1000)
 
         self.color = QtGui.QColor(113, 249, 76)
-        self.needlesColor = QtGui.QColor(84, 189, 55)
+        self.needles_color = QtGui.QColor(84, 189, 55)
 
-        self.hourHand = QtGui.QPolygon([
+        self.hour_hand = QtGui.QPolygon([
             QtCore.QPoint(0, 0),
             QtCore.QPoint(0, -50)
         ])
-        self.minuteHand = QtGui.QPolygon([
+        self.minute_hand = QtGui.QPolygon([
             QtCore.QPoint(0, 0),
             QtCore.QPoint(0, -70)
         ])
-        self.secondHand = QtGui.QPolygon([
+        self.second_hand = QtGui.QPolygon([
             QtCore.QPoint(0, 0),
             QtCore.QPoint(0, -80)
         ])
 
-    def paintNeedle(self, painter, angle, needle):
+    def paint_needle(self, painter, angle, needle):
         painter.save()
         painter.rotate(angle)
         painter.drawConvexPolygon(needle)
@@ -42,7 +42,7 @@ class AnalogClock(QtWidgets.QWidget):
 
     def paintEvent(self, event):
         side = min(self.width(), self.height())
-        qTime = QtCore.QTime.currentTime()
+        q_time = QtCore.QTime.currentTime()
 
         painter = QtGui.QPainter()
         painter.begin(self)
@@ -58,15 +58,15 @@ class AnalogClock(QtWidgets.QWidget):
         pen.setColor(self.needlesColor)
         painter.setPen(pen)
 
-        self.paintNeedle(painter, 0.5 * (60 * qTime.hour() + qTime.minute()), self.hourHand)
-        self.paintNeedle(painter, 6.0 * qTime.minute(), self.minuteHand)
+        self.paint_needle(painter, 0.5 * (60 * q_time.hour() + q_time.minute()), self.hour_hand)
+        self.paint_needle(painter, 6.0 * q_time.minute(), self.minute_hand)
 
         painter.save()
         pen.setColor(self.color)
         pen.setWidth(1)
         painter.setPen(pen)
 
-        self.paintNeedle(painter, 6.0 * qTime.second(), self.secondHand)
+        self.paint_needle(painter, 6.0 * q_time.second(), self.second_hand)
 
         pen.setColor(self.color)
         pen.setWidth(1)

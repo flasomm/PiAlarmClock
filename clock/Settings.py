@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-
+import time
 
 class Settings(QtWidgets.QWidget):
 
@@ -8,41 +8,56 @@ class Settings(QtWidgets.QWidget):
 
         self.setAutoFillBackground(True)
         palette = self.palette()
-        palette.setColor(self.backgroundRole(), QtCore.Qt.gray)
+        palette.setColor(self.backgroundRole(), QtCore.Qt.lightGray)
         self.setPalette(palette)
 
-        formLayout = QtWidgets.QFormLayout()
-        formLayout.setFormAlignment(QtCore.Qt.AlignLeft)
-        hbox = QtWidgets.QHBoxLayout()
-        digitalRadio = QtWidgets.QRadioButton("Digital")
-        analogRadio = QtWidgets.QRadioButton("Analog")
-        analogRadio.toggled.connect(lambda: parent.settings.setValue("default/digital", 0))
-        digitalRadio.toggled.connect(lambda: parent.settings.setValue("default/digital", 1))
+        form_layout = QtWidgets.QFormLayout()
+        form_layout.setFormAlignment(QtCore.Qt.AlignLeft)
+        hbox_type = QtWidgets.QHBoxLayout()
 
-        digitalRadio.setAutoExclusive(True)
-        analogRadio.setAutoExclusive(True)
+        digital_radio = QtWidgets.QRadioButton("Digital")
+        analog_radio = QtWidgets.QRadioButton("Analog")
+        analog_radio.toggled.connect(lambda: parent.settings.setValue("default/digital", 0))
+        digital_radio.toggled.connect(lambda: parent.settings.setValue("default/digital", 1))
 
-        print('step2', parent.settings.value("default/digital"))
+        digital_radio.setAutoExclusive(True)
+        analog_radio.setAutoExclusive(True)
 
-        digitalRadioChecked = True if (parent.settings.value("default/digital") == '1') else False
-        analogRadioChecked = True if (parent.settings.value("default/digital") == '0') else False
-        digitalRadio.setChecked(digitalRadioChecked)
-        analogRadio.setChecked(analogRadioChecked)
+        digital_radio_checked = True if (int(parent.settings.value("default/digital")) == 1) else False
+        analog_radio_checked = True if (int(parent.settings.value("default/digital")) == 0) else False
+        digital_radio.setChecked(digital_radio_checked)
+        analog_radio.setChecked(analog_radio_checked)
 
-        hbox.addWidget(digitalRadio)
-        hbox.addWidget(analogRadio)
-        hbox.addStretch()
+        hbox_type.addWidget(digital_radio)
+        hbox_type.addWidget(analog_radio)
+        hbox_type.addStretch()
 
-        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel)
-        buttonBox.accepted.connect(parent.displayDefault)
-        buttonBox.rejected.connect(parent.displayDefault)
-        buttonLayout = QtWidgets.QVBoxLayout()
-        buttonLayout.addWidget(buttonBox)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel)
+        button_box.accepted.connect(parent.display_default)
+        button_box.rejected.connect(parent.display_default)
+        button_layout = QtWidgets.QVBoxLayout()
+        button_layout.addWidget(button_box)
 
-        formLayout.addRow(QtWidgets.QLabel("Clock Type:"), hbox)
-        formLayout.addRow(buttonLayout)
+        hbox_alarm = QtWidgets.QHBoxLayout()
+        time = QtCore.QTime()
+        curent_t = time.currentTime()
+        alarm = QtWidgets.QTimeEdit(curent_t)
+        alarm.dateTimeChanged.connect(self.set_alarm)
+        hbox_alarm.addWidget(alarm)
 
-        self.setLayout(formLayout)
+        form_layout.addRow(QtWidgets.QLabel("Clock Type:"), hbox_type)
+        form_layout.addRow(QtWidgets.QLabel("Alarm:"), hbox_alarm)
+        form_layout.addRow(button_layout)
+
+        self.setLayout(form_layout)
 
         # layoutRadio.setFormAlignment(QtCore.Qt.AlignCenter)
         # name.setMinimumSize(QtCore.QSize(500, 21))
+
+    def set_alarm(self, data):
+        self.parent().settings.setValue("alarm/time", 0)
+        current_in_sec = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.currentTime())
+        alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(data.time())
+        time.sleep(alarm_in_sec - current_in_sec)
+        print("alarm")
+        #myDTE.setTime(this_moment)

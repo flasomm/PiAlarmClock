@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5 import QtCore, QtWidgets, QtGui
 from clock.DigitalClock import DigitalClock
 from clock.AnalogClock import AnalogClock
@@ -15,21 +16,20 @@ class Main(QtWidgets.QMainWindow):
         palette = self.palette()
         palette.setColor(self.backgroundRole(), QtCore.Qt.black)
         self.setPalette(palette)
+        self.setWindowTitle('RaspberryClock')
         self.setGeometry(600, 600, 600, 500)
         self.move(600, 300)
-        self.setWindowTitle('RaspberryClock')
-        self.setWindowIcon(QtGui.QIcon('web.png'))
-        self.displayDefault()
+        self.display_default()
         self.show()
 
-    def displayDefault(self):
-        mainWidget = MainWidget(self)
+    def display_default(self):
+        main_widget = MainWidget(self)
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout(widget)
-        layout.addWidget(mainWidget)
+        layout.addWidget(main_widget)
         self.setCentralWidget(widget)
 
-    def displaySettings(self):
+    def display_settings(self):
         settings = Settings(self)
         self.setCentralWidget(settings)
 
@@ -42,24 +42,23 @@ class MainWidget(QtWidgets.QWidget):
         self.__layout()
 
     def __controls(self):
-        self.settingsButton = QtWidgets.QPushButton("Settings")
-        buttonStyle = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
-        self.settingsButton.setStyleSheet(buttonStyle)
-        self.settingsButton.clicked.connect(self.parent().displaySettings)
-        self.digitalClock = DigitalClock()
-        self.analogClock = AnalogClock()
+        self.settings_button = QtWidgets.QPushButton("Settings")
+        button_style = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
+        self.settings_button.setStyleSheet(button_style)
+        self.settings_button.clicked.connect(self.parent().display_settings)
+        self.digital_clock = DigitalClock()
+        self.analog_clock = AnalogClock()
 
     def __layout(self):
         self.vbox = QtWidgets.QVBoxLayout()
         self.hbox = QtWidgets.QHBoxLayout()
         self.hbox.addStretch(1)
-        self.hbox.addWidget(self.settingsButton)
+        self.hbox.addWidget(self.settings_button)
 
-        print('step1', self.parent().settings.value("default/digital"))
-        if self.parent().settings.value("default/digital") == '1':
-            self.vbox.addWidget(self.digitalClock)
+        if int(self.parent().settings.value("default/digital")) == 1:
+            self.vbox.addWidget(self.digital_clock)
         else:
-            self.vbox.addWidget(self.analogClock)
+            self.vbox.addWidget(self.analog_clock)
 
         self.vbox.addLayout(self.hbox)
         self.setLayout(self.vbox)
@@ -67,5 +66,7 @@ class MainWidget(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+    icon_path = os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir))
+    app.setWindowIcon(QtGui.QIcon(os.path.join(icon_path, 'clock.png')))
     main = Main()
     sys.exit(app.exec_())
