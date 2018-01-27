@@ -55,7 +55,7 @@ class AnalogClock(QtWidgets.QWidget):
         pen.setWidth(3)
         pen.setCapStyle(QtCore.Qt.RoundCap)
         pen.setJoinStyle(QtCore.Qt.RoundJoin)
-        pen.setColor(self.needlesColor)
+        pen.setColor(self.needles_color)
         painter.setPen(pen)
 
         self.paint_needle(painter, 0.5 * (60 * q_time.hour() + q_time.minute()), self.hour_hand)

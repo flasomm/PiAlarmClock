@@ -32,9 +32,8 @@ class Settings(QtWidgets.QWidget):
         hbox_type.addWidget(analog_radio)
         hbox_type.addStretch()
 
-        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save)
         button_box.accepted.connect(parent.display_default)
-        button_box.rejected.connect(parent.display_default)
         button_layout = QtWidgets.QVBoxLayout()
         button_layout.addWidget(button_box)
 
