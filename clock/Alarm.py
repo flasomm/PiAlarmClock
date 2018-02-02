@@ -4,6 +4,7 @@ import threading
 
 
 class Alarm(threading.Thread):
+
     def __init__(self, hours, minutes):
         super(Alarm, self).__init__()
         self.hours = int(hours)
@@ -16,7 +17,7 @@ class Alarm(threading.Thread):
                 now = time.localtime()
                 if now.tm_hour == self.hours and now.tm_min == self.minutes:
                     print("ALARM NOW!")
-                    os.popen("bensound-dubstep.mp3")
+                    #os.popen("bensound-dubstep.mp3")
                     return
             time.sleep(60)
         except:

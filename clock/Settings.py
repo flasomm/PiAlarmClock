@@ -23,10 +23,8 @@ class Settings(QtWidgets.QWidget):
         digital_radio.setAutoExclusive(True)
         analog_radio.setAutoExclusive(True)
 
-        digital_radio_checked = True if (int(parent.settings.value("default/digital")) == 1) else False
-        analog_radio_checked = True if (int(parent.settings.value("default/digital")) == 0) else False
-        digital_radio.setChecked(digital_radio_checked)
-        analog_radio.setChecked(analog_radio_checked)
+        digital_radio.setChecked(int(parent.settings.value("default/digital")) == 1)
+        analog_radio.setChecked(int(parent.settings.value("default/digital")) == 0)
 
         hbox_type.addWidget(digital_radio)
         hbox_type.addWidget(analog_radio)
@@ -52,31 +50,32 @@ class Settings(QtWidgets.QWidget):
 
         self.setLayout(form_layout)
 
-        # layoutRadio.setFormAlignment(QtCore.Qt.AlignCenter)
-        # name.setMinimumSize(QtCore.QSize(500, 21))
+    def sec_to_hms(self, sec):
+        m, s = divmod(sec, 60)
+        h, m = divmod(m, 60)
+
+        return [h, m, s]
 
     def init_alarm(self):
-        if self.parent().settings.value("alarm/time") == 0:
-            self.activate_alarm_radio.setChecked(False)
-            time = QtCore.QTime()
-            curent_t = time.currentTime()
-            alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(curent_t.time())
-            return QtWidgets.QTimeEdit(alarm_in_sec)
-        else:
-            self.activate_alarm_radio.setChecked(True)
-            m, s = divmod(int(self.parent().settings.value("alarm/time")), 60)
-            h, m = divmod(m, 60)
-            return QtWidgets.QTimeEdit(QtCore.QTime(h, m, s))
+        is_checked = int(self.parent().settings.value("alarm/time")) != 0
+        self.activate_alarm_radio.setChecked(is_checked)
+        hms = [0, 0, 0]
+        if is_checked:
+            hms = self.sec_to_hms(int(self.parent().settings.value("alarm/time")))
 
-    def activate_alarm(self):
-        self.set_alarm(self.alarm)
+        return QtWidgets.QTimeEdit(QtCore.QTime(hms[0], hms[1], hms[2]))
 
     def set_alarm(self, data):
+        alarm_in_sec, time_diff_sec = 0, 0
         if self.activate_alarm_radio.isChecked():
             current_in_sec = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.currentTime())
             alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(data.time())
-            alarm_sec = alarm_in_sec - current_in_sec
-            self.parent().settings.setValue("alarm/time", alarm_in_sec)
-            print("alarm", alarm_sec)
-        else:
-            self.parent().settings.setValue("alarm/time", 0)
+            time_diff_sec = alarm_in_sec - current_in_sec
+        if time_diff_sec < 0:
+            time_diff_sec += 86400  # number of seconds in a day
+        self.parent().settings.setValue("alarm/time", alarm_in_sec)
+        
+        print(self.sec_to_hms(time_diff_sec))
+
+    def activate_alarm(self):
+        self.set_alarm(self.alarm)

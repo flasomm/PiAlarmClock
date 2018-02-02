@@ -12,7 +12,7 @@ class AnalogClock(QtWidgets.QWidget):
 
     def __init__(self):
         super().__init__()
-        locale.setlocale(locale.LC_TIME, 'fr_FR')
+#        locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
 
         timer = QtCore.QTimer(self)
         timer.timeout.connect(self.update)
