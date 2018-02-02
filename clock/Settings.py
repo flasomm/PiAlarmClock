@@ -38,12 +38,11 @@ class Settings(QtWidgets.QWidget):
         button_layout.addWidget(button_box)
 
         hbox_alarm = QtWidgets.QHBoxLayout()
-        time = QtCore.QTime()
-        curent_t = time.currentTime()
-        self.alarm = QtWidgets.QTimeEdit(curent_t)
-        self.alarm.dateTimeChanged.connect(self.set_alarm)
+
         self.activate_alarm_radio = QtWidgets.QCheckBox("Activate")
         self.activate_alarm_radio.clicked.connect(self.activate_alarm)
+        self.alarm = self.init_alarm()
+        self.alarm.dateTimeChanged.connect(self.set_alarm)
         hbox_alarm.addWidget(self.alarm)
         hbox_alarm.addWidget(self.activate_alarm_radio)
 
@@ -56,6 +55,19 @@ class Settings(QtWidgets.QWidget):
         # layoutRadio.setFormAlignment(QtCore.Qt.AlignCenter)
         # name.setMinimumSize(QtCore.QSize(500, 21))
 
+    def init_alarm(self):
+        if self.parent().settings.value("alarm/time") == 0:
+            self.activate_alarm_radio.setChecked(False)
+            time = QtCore.QTime()
+            curent_t = time.currentTime()
+            alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(curent_t.time())
+            return QtWidgets.QTimeEdit(alarm_in_sec)
+        else:
+            self.activate_alarm_radio.setChecked(True)
+            m, s = divmod(int(self.parent().settings.value("alarm/time")), 60)
+            h, m = divmod(m, 60)
+            return QtWidgets.QTimeEdit(QtCore.QTime(h, m, s))
+
     def activate_alarm(self):
         self.set_alarm(self.alarm)
 
@@ -64,7 +76,7 @@ class Settings(QtWidgets.QWidget):
             current_in_sec = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.currentTime())
             alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(data.time())
             alarm_sec = alarm_in_sec - current_in_sec
-            self.parent().settings.setValue("alarm/time", alarm_sec)
+            self.parent().settings.setValue("alarm/time", alarm_in_sec)
             print("alarm", alarm_sec)
         else:
             self.parent().settings.setValue("alarm/time", 0)
