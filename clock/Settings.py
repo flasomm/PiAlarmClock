@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
+from clock.Alarm import Alarm
 
 
 class Settings(QtWidgets.QWidget):
@@ -50,32 +51,31 @@ class Settings(QtWidgets.QWidget):
 
         self.setLayout(form_layout)
 
-    def sec_to_hms(self, sec):
-        m, s = divmod(sec, 60)
-        h, m = divmod(m, 60)
-
-        return [h, m, s]
-
     def init_alarm(self):
         is_checked = int(self.parent().settings.value("alarm/time")) != 0
         self.activate_alarm_radio.setChecked(is_checked)
-        hms = [0, 0, 0]
-        if is_checked:
-            hms = self.sec_to_hms(int(self.parent().settings.value("alarm/time")))
+        ms = int(self.parent().settings.value("alarm/time"))
+        secs = (ms / 1000) % 60
+        mins = (ms / (1000 * 60)) % 60
+        hours = (ms / (1000 * 60 * 60)) % 24
 
-        return QtWidgets.QTimeEdit(QtCore.QTime(hms[0], hms[1], hms[2]))
+        return QtWidgets.QTimeEdit(QtCore.QTime(hours, mins, secs))
 
     def set_alarm(self, data):
-        alarm_in_sec, time_diff_sec = 0, 0
+        alarm_ms, time_diff_ms = 0, 0
+
         if self.activate_alarm_radio.isChecked():
-            current_in_sec = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.currentTime())
-            alarm_in_sec = QtCore.QTime(0, 0, 0).secsTo(data.time())
-            time_diff_sec = alarm_in_sec - current_in_sec
-        if time_diff_sec < 0:
-            time_diff_sec += 86400  # number of seconds in a day
-        self.parent().settings.setValue("alarm/time", alarm_in_sec)
-        
-        print(self.sec_to_hms(time_diff_sec))
+            current_ms = QtCore.QTime(0, 0, 0).msecsTo(QtCore.QTime.currentTime())
+            alarm_ms = QtCore.QTime(0, 0, 0).msecsTo(data.time())
+            time_diff_ms = alarm_ms - current_ms
+
+            if time_diff_ms < 0:
+                time_diff_ms += 86400000  # number of milliseconds in a day
+            print(time_diff_ms)
+            self.alarm = Alarm(time_diff_ms)
+            self.alarm.start()
+
+        self.parent().settings.setValue("alarm/time", alarm_ms)
 
     def activate_alarm(self):
         self.set_alarm(self.alarm)

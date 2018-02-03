@@ -1,27 +1,31 @@
+from PyQt5 import QtCore
 import time
-import os
-import threading
 
 
-class Alarm(threading.Thread):
+class Alarm(QtCore.QThread):
 
-    def __init__(self, hours, minutes):
+    def __init__(self, millis):
         super(Alarm, self).__init__()
-        self.hours = int(hours)
-        self.minutes = int(minutes)
+        self.millis = int(millis)
+        print('millis', millis)
         self.keep_running = True
 
     def run(self):
+        print("Alarm Start")
+        # QtCore.QTimer().singleShot(self.millis, self.times_up)
         try:
             while self.keep_running:
-                now = time.localtime()
-                if now.tm_hour == self.hours and now.tm_min == self.minutes:
+                current_ms = int(round(time.time() * 1000))
+                print('millis', self.millis)
+                print('current', current_ms)
+                if current_ms == self.millis:
                     print("ALARM NOW!")
-                    #os.popen("bensound-dubstep.mp3")
+                    self.times_up()
                     return
-            time.sleep(60)
         except:
             return
 
-    def just_die(self):
+    def times_up(self):
+        print("Alarm stop")
         self.keep_running = False
+        self.terminate()
