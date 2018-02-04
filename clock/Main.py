@@ -19,6 +19,7 @@ class Main(QtWidgets.QMainWindow):
         self.setWindowTitle('RaspberryClock')
         self.setGeometry(600, 600, 600, 500)
         self.move(600, 300)
+        self.worker_alarm = None
         self.display_default()
         self.show()
 
@@ -32,6 +33,18 @@ class Main(QtWidgets.QMainWindow):
     def display_settings(self):
         settings = Settings(self)
         self.setCentralWidget(settings)
+
+    def closeEvent(self, event):
+        result = QtWidgets.QMessageBox.question(self,
+                                                "Confirm Exit...",
+                                                "Are you sure you want to exit ?",
+                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        event.ignore()
+
+        if result == QtWidgets.QMessageBox.Yes:
+            if self.worker_alarm is not None:
+                self.worker_alarm.terminate()
+            event.accept()
 
 
 class MainWidget(QtWidgets.QWidget):

@@ -54,6 +54,7 @@ class Settings(QtWidgets.QWidget):
     def init_alarm(self):
         is_checked = int(self.parent().settings.value("alarm/time")) != 0
         self.activate_alarm_radio.setChecked(is_checked)
+
         ms = int(self.parent().settings.value("alarm/time"))
         secs = (ms / 1000) % 60
         mins = (ms / (1000 * 60)) % 60
@@ -62,18 +63,12 @@ class Settings(QtWidgets.QWidget):
         return QtWidgets.QTimeEdit(QtCore.QTime(hours, mins, secs))
 
     def set_alarm(self, data):
-        alarm_ms, time_diff_ms = 0, 0
-
+        alarm_ms = 0
         if self.activate_alarm_radio.isChecked():
-            current_ms = QtCore.QTime(0, 0, 0).msecsTo(QtCore.QTime.currentTime())
             alarm_ms = QtCore.QTime(0, 0, 0).msecsTo(data.time())
-            time_diff_ms = alarm_ms - current_ms
-
-            if time_diff_ms < 0:
-                time_diff_ms += 86400000  # number of milliseconds in a day
-            print(time_diff_ms)
-            self.alarm = Alarm(time_diff_ms)
-            self.alarm.start()
+            self.parent().worker_alarm = Alarm(alarm_ms)
+            self.parent().worker_alarm.terminated.connect(self.parent().activate_alarm_radio.setChecked(False))
+            self.parent().worker_alarm.start()
 
         self.parent().settings.setValue("alarm/time", alarm_ms)
 

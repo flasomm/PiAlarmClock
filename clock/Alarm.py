@@ -1,5 +1,4 @@
 from PyQt5 import QtCore
-import time
 
 
 class Alarm(QtCore.QThread):
@@ -7,18 +6,15 @@ class Alarm(QtCore.QThread):
     def __init__(self, millis):
         super(Alarm, self).__init__()
         self.millis = int(millis)
-        print('millis', millis)
         self.keep_running = True
+        self.signal = QtCore.pyqtSignal()
 
     def run(self):
         print("Alarm Start")
-        # QtCore.QTimer().singleShot(self.millis, self.times_up)
         try:
             while self.keep_running:
-                current_ms = int(round(time.time() * 1000))
-                print('millis', self.millis)
-                print('current', current_ms)
-                if current_ms == self.millis:
+                current_ms = QtCore.QTime(0, 0, 0).msecsTo(QtCore.QTime.currentTime())
+                if self.millis == current_ms:
                     print("ALARM NOW!")
                     self.times_up()
                     return
@@ -28,4 +24,5 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
+        self.emit(self.signal, "terminate")
         self.terminate()
