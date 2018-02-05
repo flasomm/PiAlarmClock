@@ -62,12 +62,15 @@ class Settings(QtWidgets.QWidget):
 
         return QtWidgets.QTimeEdit(QtCore.QTime(hours, mins, secs))
 
+    def deactivate_radio(self):
+        self.activate_alarm_radio.setChecked(False)
+
     def set_alarm(self, data):
         alarm_ms = 0
         if self.activate_alarm_radio.isChecked():
             alarm_ms = QtCore.QTime(0, 0, 0).msecsTo(data.time())
             self.parent().worker_alarm = Alarm(alarm_ms)
-            self.parent().worker_alarm.terminated.connect(self.parent().activate_alarm_radio.setChecked(False))
+            self.parent().worker_alarm.stop_alarm.connect(self.deactivate_radio)
             self.parent().worker_alarm.start()
 
         self.parent().settings.setValue("alarm/time", alarm_ms)

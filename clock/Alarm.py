@@ -3,11 +3,12 @@ from PyQt5 import QtCore
 
 class Alarm(QtCore.QThread):
 
+    stop_alarm = QtCore.pyqtSignal()
+
     def __init__(self, millis):
         super(Alarm, self).__init__()
         self.millis = int(millis)
         self.keep_running = True
-        self.signal = QtCore.pyqtSignal()
 
     def run(self):
         print("Alarm Start")
@@ -24,5 +25,5 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
-        self.emit(self.signal, "terminate")
+        self.stop_alarm.emit(self.stop_alarm, "terminated")
         self.terminate()
