@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtWidgets
-from clock.Alarm import Alarm
 
 
 class Settings(QtWidgets.QWidget):
@@ -31,7 +30,7 @@ class Settings(QtWidgets.QWidget):
         hbox_type.addWidget(analog_radio)
         hbox_type.addStretch()
 
-        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         button_box.accepted.connect(parent.display_default)
         button_layout = QtWidgets.QVBoxLayout()
         button_layout.addWidget(button_box)
@@ -52,9 +51,8 @@ class Settings(QtWidgets.QWidget):
         self.setLayout(form_layout)
 
     def init_alarm(self):
-        is_checked = int(self.parent().settings.value("alarm/time")) != 0
-        self.activate_alarm_radio.setChecked(is_checked)
-
+        alarm_activated = int(self.parent().settings.value("alarm/activated")) != 0
+        self.activate_alarm_radio.setChecked(alarm_activated)
         ms = int(self.parent().settings.value("alarm/time"))
         secs = (ms / 1000) % 60
         mins = (ms / (1000 * 60)) % 60
@@ -62,19 +60,14 @@ class Settings(QtWidgets.QWidget):
 
         return QtWidgets.QTimeEdit(QtCore.QTime(hours, mins, secs))
 
-    def deactivate_radio(self):
-        print('deactivate_radio')
+    def set_alarm(self, alarm):
         self.activate_alarm_radio.setChecked(False)
-
-    def set_alarm(self, data):
-        alarm_ms = 0
-        if self.activate_alarm_radio.isChecked():
-            alarm_ms = QtCore.QTime(0, 0, 0).msecsTo(data.time())
-            self.parent().worker_alarm = Alarm(alarm_ms)
-            self.parent().worker_alarm.stop_alarm.connect(self.deactivate_radio)
-            self.parent().worker_alarm.start()
-
-        self.parent().settings.setValue("alarm/time", alarm_ms)
+        alarm_delay = QtCore.QTime(0, 0, 0).msecsTo(alarm.time())
+        self.parent().settings.setValue("alarm/time", alarm_delay)
+        self.parent().settings.setValue("alarm/activated", 0)
 
     def activate_alarm(self):
-        self.set_alarm(self.alarm)
+        if self.activate_alarm_radio.isChecked():
+            alarm_delay = self.parent().settings.value("alarm/time")
+            self.parent().settings.setValue("alarm/activated", 1)
+            self.parent().start_alarm(alarm_delay)

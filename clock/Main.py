@@ -1,9 +1,11 @@
 import sys
 import os
+import signal
 from PyQt5 import QtCore, QtWidgets, QtGui
 from clock.DigitalClock import DigitalClock
 from clock.AnalogClock import AnalogClock
 from clock.Settings import Settings
+from clock.Alarm import Alarm
 
 
 class Main(QtWidgets.QMainWindow):
@@ -18,8 +20,9 @@ class Main(QtWidgets.QMainWindow):
         self.setPalette(palette)
         self.setWindowTitle('RaspberryClock')
         self.setGeometry(600, 600, 600, 500)
-        self.move(600, 300)
-        self.worker_alarm = None
+        self.move(300, 0)
+        self.alarm_worker = None
+        self.settings_form = None
         self.display_default()
         self.show()
 
@@ -31,8 +34,17 @@ class Main(QtWidgets.QMainWindow):
         self.setCentralWidget(widget)
 
     def display_settings(self):
-        settings = Settings(self)
-        self.setCentralWidget(settings)
+        self.settings_form = Settings(self)
+        self.setCentralWidget(self.settings_form)
+
+    def start_alarm(self, delay):
+        self.alarm_worker = Alarm(delay)
+        self.alarm_worker.stop_alarm.connect(self.times_up)
+        self.alarm_worker.start()
+
+    def times_up(self):
+        self.settings.setValue("alarm/activated", 0)
+        self.alarm_worker.quit()
 
     def closeEvent(self, event):
         result = QtWidgets.QMessageBox.question(self,
@@ -42,8 +54,6 @@ class Main(QtWidgets.QMainWindow):
         event.ignore()
 
         if result == QtWidgets.QMessageBox.Yes:
-            if self.worker_alarm is not None:
-                self.worker_alarm.terminate()
             event.accept()
 
 
@@ -51,6 +61,8 @@ class MainWidget(QtWidgets.QWidget):
 
     def __init__(self, parent):
         super(MainWidget, self).__init__(parent)
+        self.digital_clock = DigitalClock()
+        self.analog_clock = AnalogClock()
         self.__controls()
         self.__layout()
 
@@ -59,8 +71,6 @@ class MainWidget(QtWidgets.QWidget):
         button_style = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
         self.settings_button.setStyleSheet(button_style)
         self.settings_button.clicked.connect(self.parent().display_settings)
-        self.digital_clock = DigitalClock()
-        self.analog_clock = AnalogClock()
 
     def __layout(self):
         self.vbox = QtWidgets.QVBoxLayout()
@@ -81,5 +91,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     icon_path = os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir))
     app.setWindowIcon(QtGui.QIcon(os.path.join(icon_path, 'clock.png')))
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     main = Main()
     sys.exit(app.exec_())
