@@ -25,5 +25,5 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
-        self.stop_alarm.emit(self.stop_alarm, "terminated")
+        self.stop_alarm.emit()
         self.terminate()

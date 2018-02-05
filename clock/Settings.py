@@ -31,7 +31,7 @@ class Settings(QtWidgets.QWidget):
         hbox_type.addWidget(analog_radio)
         hbox_type.addStretch()
 
-        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Save)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
         button_box.accepted.connect(parent.display_default)
         button_layout = QtWidgets.QVBoxLayout()
         button_layout.addWidget(button_box)
@@ -63,6 +63,7 @@ class Settings(QtWidgets.QWidget):
         return QtWidgets.QTimeEdit(QtCore.QTime(hours, mins, secs))
 
     def deactivate_radio(self):
+        print('deactivate_radio')
         self.activate_alarm_radio.setChecked(False)
 
     def set_alarm(self, data):
