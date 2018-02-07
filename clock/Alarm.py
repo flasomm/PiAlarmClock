@@ -2,7 +2,6 @@ from PyQt5 import QtCore
 
 
 class Alarm(QtCore.QThread):
-
     stop_alarm = QtCore.pyqtSignal()
 
     def __init__(self, millis):
@@ -26,4 +25,4 @@ class Alarm(QtCore.QThread):
         print("Alarm stop")
         self.keep_running = False
         self.stop_alarm.emit()
-        self.terminate()
+        self.quit()

@@ -39,12 +39,11 @@ class Main(QtWidgets.QMainWindow):
 
     def start_alarm(self, delay):
         self.alarm_worker = Alarm(delay)
-        self.alarm_worker.stop_alarm.connect(self.times_up)
+        self.alarm_worker.stop_alarm.connect(self.stop_alarm)
         self.alarm_worker.start()
 
-    def times_up(self):
+    def stop_alarm(self):
         self.settings.setValue("alarm/activated", 0)
-        self.alarm_worker.quit()
 
     def closeEvent(self, event):
         result = QtWidgets.QMessageBox.question(self,
