@@ -88,6 +88,8 @@ class MainWidget(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+    font = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)) + '/fonts/DS-DIGIT.TTF'
+    QtGui.QFontDatabase.addApplicationFont(font)
     icon_path = os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir))
     app.setWindowIcon(QtGui.QIcon(os.path.join(icon_path, 'clock.png')))
     signal.signal(signal.SIGINT, signal.SIG_DFL)
