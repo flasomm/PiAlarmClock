@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from api.Weather import Weather
 
 
 class Alarm(QtCore.QThread):
@@ -24,5 +25,6 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
+        apiWeather = Weather
         self.stop_alarm.emit()
         self.quit()
