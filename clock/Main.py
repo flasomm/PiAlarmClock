@@ -6,7 +6,7 @@ from clock.DigitalClock import DigitalClock
 from clock.AnalogClock import AnalogClock
 from clock.Settings import Settings
 from clock.Alarm import Alarm
-
+from api.Weather import Weather
 
 class Main(QtWidgets.QMainWindow):
 
@@ -70,6 +70,8 @@ class MainWidget(QtWidgets.QWidget):
         button_style = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
         self.settings_button.setStyleSheet(button_style)
         self.settings_button.clicked.connect(self.parent().display_settings)
+        weather = Weather()
+        print(weather.infos())
 
     def __layout(self):
         self.vbox = QtWidgets.QVBoxLayout()

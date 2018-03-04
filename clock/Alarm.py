@@ -25,6 +25,8 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
-        apiWeather = Weather
+        apiWeather = Weather()
+        print(apiWeather.infos())
+        # print data['query']['results']
         self.stop_alarm.emit()
         self.quit()
