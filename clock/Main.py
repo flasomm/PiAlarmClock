@@ -7,6 +7,7 @@ from clock.AnalogClock import AnalogClock
 from clock.Settings import Settings
 from clock.Alarm import Alarm
 from api.Weather import Weather
+from api.Polly import Polly
 
 class Main(QtWidgets.QMainWindow):
 
@@ -71,7 +72,8 @@ class MainWidget(QtWidgets.QWidget):
         self.settings_button.setStyleSheet(button_style)
         self.settings_button.clicked.connect(self.parent().display_settings)
         weather = Weather()
-        print(weather.infos())
+        voice = Polly(weather.infos())
+        voice.say()
 
     def __layout(self):
         self.vbox = QtWidgets.QVBoxLayout()

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
 from api.Weather import Weather
+from api.Polly import Polly
 
 
 class Alarm(QtCore.QThread):
@@ -16,7 +17,6 @@ class Alarm(QtCore.QThread):
             while self.keep_running:
                 current_ms = QtCore.QTime(0, 0, 0).msecsTo(QtCore.QTime.currentTime())
                 if self.millis == current_ms:
-                    print("ALARM NOW!")
                     self.times_up()
                     return
         except:
@@ -25,8 +25,8 @@ class Alarm(QtCore.QThread):
     def times_up(self):
         print("Alarm stop")
         self.keep_running = False
-        apiWeather = Weather()
-        print(apiWeather.infos())
-        # print data['query']['results']
+        weather = Weather()
+        voice = Polly(weather.infos())
+        voice.say()
         self.stop_alarm.emit()
         self.quit()

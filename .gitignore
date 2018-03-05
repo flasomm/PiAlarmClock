@@ -2,3 +2,6 @@
 venv
 __pycache__/
 .DS_Store
+ui
+mp3
+clock/test.json
