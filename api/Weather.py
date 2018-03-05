@@ -1,6 +1,7 @@
 import urllib.parse
 import urllib.request
 import json
+import datetime
 import os
 
 
@@ -20,13 +21,15 @@ class Weather:
         humidity = data['channel']['atmosphere']['humidity']
 
         codes = json.load(open(os.path.dirname(os.path.realpath(__file__)) + '/weather-codes.json', encoding='utf8'))
-
+        sunrise = datetime.datetime.strptime(sunrise, "%I:%M %p")
+        sunset = datetime.datetime.strptime(sunset, "%I:%M %p")
         res = """La température aujourd'hui à %s est de %s degrés celsius.
                 Conditions %s.
-                Le vent souffle à %10.0f kilomètres par heure.
+                Le vent souffle à %10.0f kilomètres heure.
                 Humidité %10.0f pourcent.
-                Le soleil va se lever à %s et se coucher à %s""" % (
-            location, temp, codes[condition], float(wind), float(humidity), sunrise, sunset
+                Lever du soleil à %s, coucher à %s""" % (
+            location, temp, codes[condition], float(wind), float(humidity),
+            sunrise.strftime("%H heure %M"), sunset.strftime("%H heure %M")
         )
         print(res)
         return res
