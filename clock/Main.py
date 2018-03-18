@@ -7,7 +7,9 @@ from clock.AnalogClock import AnalogClock
 from clock.Settings import Settings
 from clock.Alarm import Alarm
 from api.Weather import Weather
+from api.Google import Google
 from api.Polly import Polly
+
 
 class Main(QtWidgets.QMainWindow):
 
@@ -71,9 +73,12 @@ class MainWidget(QtWidgets.QWidget):
         button_style = 'QPushButton {background-color: #000; color: #71F94C; border: 1px solid #71F94C; padding: 2px;}'
         self.settings_button.setStyleSheet(button_style)
         self.settings_button.clicked.connect(self.parent().display_settings)
-        weather = Weather()
-        voice = Polly(weather.infos())
-        voice.say()
+        #weather = Weather()
+        google = Google()
+        google.mail_unread()
+        google.calendar_events()
+        #voice = Polly(weather.infos())
+        #voice.say()
 
     def __layout(self):
         self.vbox = QtWidgets.QVBoxLayout()
