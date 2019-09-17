@@ -14,7 +14,7 @@ class Google:
         'https://www.googleapis.com/auth/gmail.readonly',
         'https://www.googleapis.com/auth/calendar.readonly'
     ]
-    CLIENT_SECRET_FILE = 'client_secret_322051245517-ceifrljp5nrq06ctdrh2toggucb3pknf.apps.googleusercontent.com.json'
+    CLIENT_SECRET_FILE = '<your_secret_key>'
     APPLICATION_NAME = 'RaspberryClock'
 
     def get_credentials(self):
